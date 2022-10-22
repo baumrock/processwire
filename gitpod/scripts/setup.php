@@ -39,4 +39,11 @@ exec("ln -snf $rootPath/wire wire");
 
 // clone RockShell
 if(!is_dir("RockShell")) exec("git clone https://github.com/baumrock/RockShell.git");
-//echo shell_exec("cd RockShell && php rockshell");
+
+echo "\n\n";
+echo "#########################################\n";
+echo "#### ProcessWire is ready to install ####\n";
+echo "#### proudly powered by baumrock.com ####\n";
+echo "#########################################\n";
+echo "now install PW using RockShell and set the hostname to the url of the preview window (without http):\n";
+echo "cd $public/RockShell && php rockshell pw-install\n";
