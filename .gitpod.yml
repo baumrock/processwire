@@ -3,8 +3,10 @@ image: drud/ddev-gitpod-base:20221018
 tasks:
   - name: gitpod
     init: |
+      alias ll='ls -al'
       export DDEV_NONINTERACTIVE=true
       ddev start
+      ddev exec php gitpod/scripts/setup.php
 
 ports:
   - port: 8080

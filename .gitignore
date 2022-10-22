@@ -36,6 +36,6 @@ wire/modules/Inputfield/InputfieldDatetime/jquery-ui-timepicker-addon.min.js
 wire/modules/Jquery/JqueryFancybox/
 wire/modules/Jquery/JqueryTableSorter/JqueryTableSorter.min.js
 pwx.php
-gitpod
+gitpod/public
 .ddev/*
 !.ddev/config.yaml
