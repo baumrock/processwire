@@ -1,0 +1,12 @@
+image: drud/ddev-gitpod-base:20221018
+
+tasks:
+  - name: gitpod
+    init: |
+      export DDEV_NONINTERACTIVE=true
+      ddev start
+
+ports:
+  - port: 8080
+    visibility: public
+    onOpen: open-preview
