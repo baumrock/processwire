@@ -1,6 +1,6 @@
 name: processwire
 type: php
-docroot: ""
+docroot: "/gitpod"
 php_version: "8.1"
 webserver_type: apache-fpm
 router_http_port: "80"
