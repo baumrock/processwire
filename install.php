@@ -282,9 +282,9 @@ class Installer {
 		if(is_file("./site/install/install.sql")) {
 			$this->alertOk("Found installation profile in /site/install/");
 
-		} else if(is_dir("./site/")) {
+		} else if(is_dir("./site/") && is_file("./site/config.php")) {
 			$this->alertOk("Found /site/ — already installed? ");
-
+			
 		} else if($this->post('profile') && $this->post('step') !== '000') {
 			
 			$profiles = $this->findProfiles();
@@ -295,6 +295,8 @@ class Installer {
 				$this->btnContinue();
 				return;
 			}
+
+			if (is_dir("./site/")) @rename("./site/", "./remove-after-install/");
 			
 			if(@rename("./$profile", "./site")) {
 				$this->alertOk("Renamed /$profile => /site");
