@@ -1,11 +1,5 @@
-function InputfieldTextTags($parent) {
-
-	if(typeof $parent === "undefined") $parent = jQuery('.InputfieldForm');
-	
-	var pluginsMulti = [ 'remove_button', 'drag_drop' ];
-	var pluginsSingle = []; 
-	
-	var defaults = {
+class InputfieldTextTags {
+	defaults = {
 		delimiter: ' ',
 		persist: true, // If false, items created by the user will not show up as available options once they are unselected.
 		submitOnReturn: false,
@@ -23,8 +17,36 @@ function InputfieldTextTags($parent) {
 		}
 	};
 
+	pluginsMulti = [ 'remove_button', 'drag_drop' ];
+	
+	pluginsSingle = [];
+	
+	constructor($parent) {
+		this.$parent = $parent;
+		if(typeof $parent === "undefined") this.$parent = jQuery('.InputfieldForm');
+
+		var $inputs = jQuery('.InputfieldTextTagsInput:not(.selectized)', $parent);
+		var $selects = jQuery('.InputfieldTextTagsSelect:not(.selectized)', $parent);
+		
+		var _this = this;
+
+		if($inputs.length) {
+			$inputs.each(function() {
+				var $input = jQuery(this);
+				_this.initInput($input);
+			});
+		}
+
+		if($selects.length) {
+			$selects.each(function() {
+				var $select = jQuery(this);
+				_this.initSelect($select);
+			});
+		}
+	}
+
 	// get the 'render' options for selectize
-	function getRenderOptions(addLabel) {
+	getRenderOptions(addLabel) {
 		return {
 			item: function(item, escape) {
 				if(typeof item.label === "undefined" || !item.label.length) item.label = item.value;
@@ -41,21 +63,21 @@ function InputfieldTextTags($parent) {
 	}
 	
 	// initialize input where all tags are input by the user, there are no predefined selectable tags
-	function initInput($input) {
+	initInput($input) {
 		var o = JSON.parse($input.attr('data-opts'));
-		var options = defaults;
+		var options = this.defaults;
 		options.delimiter = o.delimiter;
 		options.closeAfterSelect = o.closeAfterSelect;
 		options.createOnBlur = o.createOnBlur; 
 		options.persist = false;
 		options.maxItems = (o.maxItems > 0 ? o.maxItems : null);
-		options.plugins = (o.maxItems === 1 ? pluginsSingle : pluginsMulti);
-		options.render = getRenderOptions(o.addLabel);
+		options.plugins = (o.maxItems === 1 ? this.pluginsSingle : this.pluginsMulti);
+		options.render = this.getRenderOptions(o.addLabel);
 		$input.selectize(options);
 	}
 
 	// initialize select with predefined selectable tags, optionally with user-entered as well
-	function initSelect($select) {
+	initSelect($select) {
 		var o = JSON.parse($select.attr('data-opts'));
 		var cfgName = typeof o.cfgName === "undefined" ? '' : o.cfgName;
 		var tags = cfgName.length ? ProcessWire.config[cfgName] : o.tags;
@@ -69,13 +91,13 @@ function InputfieldTextTags($parent) {
 			n++;
 		}
 
-		var options = jQuery.extend(defaults, {
+		var options = jQuery.extend(this.defaults, {
 			allowUserTags: o.allowUserTags,
 			delimiter: o.delimiter,
 			closeAfterSelect: o.closeAfterSelect,
 			createOnBlur: o.createOnBlur,
 			maxItems: (o.maxItems > 0 ? o.maxItems : null),
-			plugins: (o.maxItems === 1 ? pluginsSingle : pluginsMulti),
+			plugins: (o.maxItems === 1 ? this.pluginsSingle : this.pluginsMulti),
 			persist: true,
 			valueField: 'value',
 			labelField: 'label',
@@ -92,7 +114,7 @@ function InputfieldTextTags($parent) {
 				}
 				return allow;
 			},
-			render: getRenderOptions(o.addLabel)
+			render: this.getRenderOptions(o.addLabel)
 			/*
 			onDropdownOpen: function($dropdown) {
 				$dropdown.closest('li, .InputfieldImageEdit').css('z-index', 100);
@@ -147,28 +169,11 @@ function InputfieldTextTags($parent) {
 
 		$select.selectize(options);
 	}
-
-	var $inputs = jQuery('.InputfieldTextTagsInput:not(.selectized)', $parent);
-	var $selects = jQuery('.InputfieldTextTagsSelect:not(.selectized)', $parent);
-
-	if($inputs.length) {
-		$inputs.each(function() {
-			$input = jQuery(this);
-			initInput($input);
-		});
-	}
-
-	if($selects.length) {
-		$selects.each(function() {
-			var $select = jQuery(this);
-			initSelect($select);
-		}); 
-	}
 }
 
 jQuery(document).ready(function($) {
-	InputfieldTextTags();
+	ProcessWire.wire(new InputfieldTextTags);
 	$(document).on('reloaded', '.InputfieldTextTags, .InputfieldPage', function() {
-		InputfieldTextTags($(this)); 
+		ProcessWire.wire(new InputfieldTextTags($(this))); 
 	}); 
 }); 
